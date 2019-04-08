@@ -1,38 +1,45 @@
-Role Name
-=========
+# egeneralov.zabbix-proxy
 
-A brief description of the role goes here.
+Provide zabbix proxy installation.
 
-Requirements
-------------
+## Requirements
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Debian-based supported distribution.
 
-Role Variables
---------------
+## Role Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+- **zbx_database**: `sqlite3` (sqlite3 or pgsql)
+- **zbx_server**: `127.0.0.1` ip address
+- **sqlite_db**: used with `zbx_database == sqlite3`
+  - **path**: `/var/lib/zabbix`
+  - **name**: `proxy.db`
+- **zbx_proxy_conf**: List with dicts. Example: `[{ "k": "DebugLevel", "v": "3" }]`
+- **egeneralov**:
+  - **postgresql**: used with `zbx_database == pgsql`, vars for [egeneralov.postgresql](https://github.com/egeneralov/postgresql)
 
-Dependencies
-------------
+## Dependencies
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+#### hard-linked
 
-Example Playbook
-----------------
+- egeneralov.zabbix-repository
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+#### can be included
 
-    - hosts: servers
+- egeneralov.postgresql
+
+## Example Playbook
+
+    - hosts: zabbix-proxy
+      vars:
+        zbx_version: 4.2
+        zbx_server: zabbix.company.tld
       roles:
-         - { role: username.rolename, x: 42 }
+        - egeneralov.zabbix-proxy
 
-License
--------
+## License
 
-BSD
+MIT
 
-Author Information
-------------------
+## Author Information
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Eduard Generalov <eduard@generalov.net>

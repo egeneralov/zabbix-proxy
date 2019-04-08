@@ -1,2 +1,6 @@
 ---
 # vars file for egeneralov.zabbix-proxy
+
+zbx_supported_db:
+  - pgsql
+  - sqlite3

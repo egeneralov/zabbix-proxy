@@ -1,2 +1,11 @@
 ---
 # tasks file for egeneralov.zabbix-proxy
+
+- name: "Assert if {{ zbx_database }} is supported by role"
+  assert:
+    that:
+      - "zbx_database in zbx_supported_db"
+    fail_msg: "{{ zbx_database }} is not supported db"
+    success_msg: "Provisioning zabbix-proxy with {{ zbx_database }} database"
+
+- import_tasks: install_proxy.yml

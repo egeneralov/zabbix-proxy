@@ -1,0 +1,30 @@
+---
+
+- name: Install zabbix-proxy
+  apt:
+    name:
+      - "zabbix-proxy-{{ zbx_database }}"
+      - zabbix-get
+      - zabbix-sender
+    update_cache: yes
+    cache_valid_time: 3600
+
+
+- include_tasks: "{{ zbx_database }}.yml"
+
+
+- name: zabbix_proxy.conf
+  lineinfile:
+    path: "/etc/zabbix/zabbix_proxy.conf"
+    regexp: '#?{{ item.k }} =.*'
+    line: '{{ item.k }} = {{ item.v }}'
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ zbx_proxy_conf }}"
+  register: zbx_conf
+
+
+- name: Restart zabbix-proxy
+  systemd:
+    name: "zabbix-proxy.service"
+    state: restarted
+  when: zbx_conf is changed
