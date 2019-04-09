@@ -1,5 +1,8 @@
 ---
 
 - hosts: zabbix-proxy
+  vars:
+    zbx_version: 4.2
+    zbx_server: "{% for host in groups['zabbix-server'] %}{{ hostvars[host].inventory_hostname }}{% if not loop.last %},{% endif %}{% endfor %}"
   roles:
     - egeneralov.zabbix-proxy
