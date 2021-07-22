@@ -1,5 +1,4 @@
 ---
-# tasks file for egeneralov.zabbix-proxy
 
 - name: "Assert if {{ zbx_database }} is supported by role"
   assert:
@@ -8,4 +7,19 @@
     fail_msg: "{{ zbx_database }} is not supported db"
     success_msg: "Provisioning zabbix-proxy with {{ zbx_database }} database"
 
-- import_tasks: install_proxy.yml
+- include_tasks: "{{ ansible_facts['distribution'] }}/main.yml"
+
+- name: zabbix_proxy.conf
+  lineinfile:
+    path: "/etc/zabbix/zabbix_proxy.conf"
+    regexp: '#?{{ item.k }} =.*'
+    line: '{{ item.k }} = {{ item.v }}'
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ zbx_proxy_conf }}"
+  register: zbx_conf
+
+- name: Restart zabbix-proxy
+  systemd:
+    name: "zabbix-proxy.service"
+    state: "{% if zbx_conf is changed %}re{% endif %}started"
+    enabled: yes
