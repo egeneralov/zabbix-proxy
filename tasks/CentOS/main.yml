@@ -1,0 +1,14 @@
+---
+
+- set_fact:
+    _sender_pkg: "{% if zbx_database == 'sqlite3' %}zabbix-sender{% else %}zabbix-sender-{{ zbx_database }}{% endif %}"
+
+- name: Install zabbix-proxy
+  yum:
+    name:
+      - "zabbix-proxy-{{ zbx_database }}"
+      - "zabbix-get"
+      - "{{ _sender_pkg }}"
+    state: latest
+
+- include_tasks: "{{ zbx_database }}.yml"

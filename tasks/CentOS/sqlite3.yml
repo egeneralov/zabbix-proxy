@@ -1,0 +1,26 @@
+---
+
+- name: Install sqlite
+  yum:
+    name: sqlite
+
+- name: create directory for db
+  file:
+    path: "{{ sqlite_db.path }}"
+    state: directory
+    mode: 0770
+    owner: zabbix
+    group: zabbix
+
+- name: init zabbix database
+  shell: "zcat /usr/share/doc/zabbix-proxy-sqlite3/schema.sql.gz | sqlite3 {{ sqlite_db.path }}/{{ sqlite_db.name }}"
+  args:
+    creates: "{{ sqlite_db.path }}/{{ sqlite_db.name }}"
+
+- name: fix permissions
+  file:
+    path: "{{ sqlite_db.path }}"
+    recurse: yes
+    mode: 0770
+    owner: zabbix
+    group: zabbix

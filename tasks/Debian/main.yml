@@ -1,0 +1,12 @@
+---
+
+- name: Install zabbix-proxy
+  apt:
+    name:
+      - "zabbix-proxy-{{ zbx_database }}"
+      - zabbix-get
+      - zabbix-sender
+    update_cache: yes
+    cache_valid_time: 3600
+
+- include_tasks: "{{ zbx_database }}.yml"
